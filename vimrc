@@ -1,5 +1,8 @@
 " Basic Settings ----------------------------------------------------------------- {{{
 
+" More powerful backspacing
+set backspace=indent,eol,start
+
 " Disable compatibility with vi which can cause unexpected issues.
 set nocompatible
 
