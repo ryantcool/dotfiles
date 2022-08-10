@@ -1,8 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhist_cnt =6
-let g:netrw_dirhist_1='/Users/rtc29/Desktop/aa547'
-let g:netrw_dirhist_2='/System/Library/InternetAccounts'
-let g:netrw_dirhist_3='/home'
-let g:netrw_dirhist_4='/Users/rtc29'
-let g:netrw_dirhist_5='/Users/rtc29/.vim'
-let g:netrw_dirhist_6='/Applications/FaceTime.app/Contents/PlugIns/FaceTimeIntentsExtension.appex'
