@@ -16,7 +16,7 @@ alias indyevo_disconnect='bluetoothctl disconnect'
 
 
 # VPN
-alias config-vpn='/home/loadedvegangoat/.local/share/applications/config-vpn'
+alias config-vpn='/home/loadedvegangoat/.local/bin/config-vpn'
 
 
 # Applications
