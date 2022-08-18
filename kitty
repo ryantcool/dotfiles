@@ -807,22 +807,22 @@ cursor_shape block
 
 #: Tab bar {{{
 
-# tab_bar_edge bottom
+tab_bar_edge bottom
 
 #: Which edge to show the tab bar on, top or bottom
 
-# tab_bar_margin_width 0.0
+tab_bar_margin_width 0.0
 
 #: The margin to the left and right of the tab bar (in pts)
 
-# tab_bar_margin_height 0.0 0.0
+tab_bar_margin_height 0.0 0.0
 
 #: The margin above and below the tab bar (in pts). The first number
 #: is the margin between the edge of the OS Window and the tab bar and
 #: the second number is the margin between the tab bar and the
 #: contents of the current tab.
 
-# tab_bar_style fade
+ tab_bar_style fade
 
 #: The tab bar style, can be one of:
 
@@ -848,12 +848,12 @@ cursor_shape block
 #:     action which presents you with a list of tabs and allows for easy
 #:     switching to a tab.
 
-# tab_bar_align left
+ tab_bar_align left
 
 #: The horizontal alignment of the tab bar, can be one of: left,
 #: center, or right.
 
-# tab_bar_min_tabs 2
+ tab_bar_min_tabs 1
 
 #: The minimum number of tabs that must exist before the tab bar is
 #: shown
@@ -866,7 +866,7 @@ cursor_shape block
 #: closed tab. A value of right will switch to the tab to the right of
 #: the closed tab. A value of last will switch to the right-most tab.
 
-# tab_fade 0.25 0.5 0.75 1
+#tab_fade 0.25 0.5 0.75 1
 
 #: Control how each tab fades into the background when using fade for
 #: the tab_bar_style. Each number is an alpha (between zero and one)
@@ -875,7 +875,7 @@ cursor_shape block
 #: can change the number of cells used by adding/removing entries to
 #: this list.
 
-# tab_separator " ┇"
+ tab_separator " ┇"
 
 #: The separator between tabs in the tab bar when using separator as
 #: the tab_bar_style.
@@ -920,21 +920,21 @@ cursor_shape block
 #: Template to use for active tabs, if not specified falls back to
 #: tab_title_template.
 
-# active_tab_foreground   #000
-# active_tab_background   #eee
-# active_tab_font_style   bold-italic
-# inactive_tab_foreground #444
-# inactive_tab_background #999
-# inactive_tab_font_style normal
+active_tab_foreground   #2700C4
+active_tab_background   #83EFFF
+active_tab_font_style   bold-italic
+inactive_tab_foreground #444
+inactive_tab_background #999
+inactive_tab_font_style normal
 
 #: Tab bar colors and styles
 
-# tab_bar_background none
+tab_bar_background none
 
 #: Background color for the tab bar. Defaults to using the terminal
 #: background color.
 
-# tab_bar_margin_color none
+tab_bar_margin_color none
 
 #: Color for the tab bar margin area. Defaults to using the terminal
 #: background color.
