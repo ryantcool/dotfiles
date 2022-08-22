@@ -12,6 +12,7 @@ alias vim='$(brew --prefix)/bin/vim'
 alias bssh='$(brew --prefix)/bin/ssh'
 alias git='$(brew --prefix)/bin/git'
 alias xargs='$(brew --prefix)/opt/findutils/bin/gxargs'
+alias bash='$(brew --prefix)/bin/bash'
 
 # Add Brews to Path
 export PATH=$(brew --prefix)/bin:$PATH
@@ -29,3 +30,18 @@ PATH="$(brew --prefix)/opt/python@3.10/bin:${PATH}"
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# Bash Completions
+if type brew &>/dev/null
+then
+  HOMEBREW_PREFIX="$(brew --prefix)"
+  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
+  then
+    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
+  else
+    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
+    do
+      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
+    done
+  fi
+fi
