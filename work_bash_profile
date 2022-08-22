@@ -4,8 +4,6 @@ alias cfs_yale_connect='mount -t smbfs //rtc29@cfs.yale.edu/home ~/temp/'
 
 alias cfs_yale_disconnect='umount ~/temp'
 
-alias ssh='/usr/bin/ssh'
-
 # Brew Installed
 alias ls='$(brew --prefix)/bin/lsd'
 alias vim='$(brew --prefix)/bin/vim'
