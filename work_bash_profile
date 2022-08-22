@@ -9,11 +9,10 @@ alias ssh='/usr/bin/ssh'
 # Brew Installed
 alias ls='$(brew --prefix)/bin/lsd'
 alias vim='$(brew --prefix)/bin/vim'
-alias bssh='$(brew --prefix)/bin/ssh'
 alias git='$(brew --prefix)/bin/git'
 alias xargs='$(brew --prefix)/opt/findutils/bin/gxargs'
 alias bash='$(brew --prefix)/bin/bash'
-alias ssh='/usr/bin/ssh'
+
 # Add Brews to Path
 export PATH=$(brew --prefix)/bin:$PATH
 export PATH=$(brew --prefix)/sbin:$PATH
