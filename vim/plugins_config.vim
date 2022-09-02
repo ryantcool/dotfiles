@@ -1,4 +1,4 @@
-"LSP Configs
+" LSP Configs
 if executable('pyls')
     au User lsp_setup call lsp#register_server({
                 \ 'name': 'pyls',
@@ -7,7 +7,7 @@ if executable('pyls')
                 \ })
 endif
 
-# Set LspWarningHighlight Colors
+" Set LspWarningHighlight Colors
 highlight LspWarningHighlight ctermfg=red guifg=red ctermbg=LightGray guibg=LightGray
 
 " NERDTree
