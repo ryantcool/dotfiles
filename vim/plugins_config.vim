@@ -7,6 +7,9 @@ if executable('pyls')
                 \ })
 endif
 
+# Set LspWarningHighlight Colors
+highlight LspWarningHighlight ctermfg=red guifg=red ctermbg=LightGray guibg=LightGray
+
 " NERDTree
 nnoremap <leader>n :NERDTreeFocus<CR>
 nnoremap <C-n> :NERDTree<CR>
