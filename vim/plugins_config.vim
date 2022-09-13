@@ -1,4 +1,4 @@
-"LSP Configs
+" LSP Configs
 if executable('pyls')
     au User lsp_setup call lsp#register_server({
                 \ 'name': 'pyls',
@@ -6,6 +6,9 @@ if executable('pyls')
                 \ 'whitelist': ['python'],
                 \ })
 endif
+
+" Set LspWarningHighlight Colors
+highlight LspWarningHighlight ctermfg=red guifg=red ctermbg=LightGray guibg=LightGray
 
 " NERDTree
 nnoremap <leader>n :NERDTreeFocus<CR>
