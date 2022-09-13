@@ -42,3 +42,12 @@ then
     done
   fi
 fi
+
+# FSL Config
+FSLDIR=/usr/local/fsl
+. ${FSLDIR}/etc/fslconf/fsl.sh
+PATH=${FSLDIR}/bin:${PATH}
+export FSLDIR PATH
+
+# My custom values for FSL environment variables
+#export FSLOUTPUTTYPE=ANALYZE
