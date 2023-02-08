@@ -4,21 +4,32 @@ alias cfs_yale_connect='mount -t smbfs //rtc29@cfs.yale.edu/home ~/temp/'
 
 alias cfs_yale_disconnect='umount ~/temp'
 
-# Brew Installed
-alias ls='$(brew --prefix)/bin/lsd'
-alias vim='$(brew --prefix)/bin/vim'
-alias git='$(brew --prefix)/bin/git'
-alias xargs='$(brew --prefix)/opt/findutils/bin/gxargs'
-alias bash='$(brew --prefix)/bin/bash'
+
+
+# Bash Complettoin
+if [[ -f ~/.nix-profile/share/bash-completion/bash_completion ]]; then 
+    . ~/.nix-profile/share/bash-completion/bash_completion
+fi
+
+# Add Nix binaries to path
+export PATH=~/.nix-profile/bin:$PATH
+
+# Nix Installed
+alias ls='~/.nix-profile/bin/lsd'
+alias vim='~/.nix-profile/bin/vim'
+alias git='~/.nix-profile/bin/git'
+alias xargs='~/.nix-profile/xargs'
+alias bash='~/.nix-profile/bin/bash'
 
 # Add Brews to Path
-export PATH=$(brew --prefix)/bin:$PATH
-export PATH=$(brew --prefix)/sbin:$PATH
-export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$PATH
+#export PATH=$(brew --prefix)/bin:$PATH
+#export PATH=$(brew --prefix)/sbin:$PATH
+#export PATH=$(brew --prefix)/opt/findutils/libexec/gnubin:$PATH
 
 
-# Python@3.10 Path
-PATH="$(brew --prefix)/opt/python@3.10/bin:${PATH}"
+# Python 3.11 Path
+alias python3='~/.nix-profile/bin/python3'
+PATH="~/.local/bin:${PATH}"
 
 
 #export PATH
@@ -28,20 +39,6 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# Bash Completions
-if type brew &>/dev/null
-then
-  HOMEBREW_PREFIX="$(brew --prefix)"
-  if [[ -r "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh" ]]
-  then
-    source "${HOMEBREW_PREFIX}/etc/profile.d/bash_completion.sh"
-  else
-    for COMPLETION in "${HOMEBREW_PREFIX}/etc/bash_completion.d/"*
-    do
-      [[ -r "${COMPLETION}" ]] && source "${COMPLETION}"
-    done
-  fi
-fi
 
 # FSL Config
 FSLDIR=/usr/local/fsl
