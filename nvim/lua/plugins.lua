@@ -48,7 +48,7 @@ return require('packer').startup(function(use)
 	config = function()
 		require('lualine').setup({
 			options = {
-				theme = "moonfly",
+				theme = 'moonfly',
 			}
 		})
 	end,}
