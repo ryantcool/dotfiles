@@ -1,3 +1,0 @@
-{
-    "pylsp.plugins.pycodestyle.ignore": ["E501"]
-}
