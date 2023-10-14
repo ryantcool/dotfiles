@@ -1,10 +1,13 @@
-local status_ok, nvim_tree = pcall(require, 'nvim-tree')
-if not status_ok then
-  return
-end
-
-nvim_tree.setup {
-  auto_reload_on_write = true,
+return {
+  "nvim-tree/nvim-tree.lua",
+  version = "*",
+  lazy = false,
+  dependencies = {
+    "nvim-tree/nvim-web-devicons",
+  },
+  config = function()
+    require("nvim-tree").setup ({
+      auto_reload_on_write = true,
       disable_netrw = false,
       hijack_cursor = false,
       hijack_netrw = true,
@@ -22,7 +25,6 @@ nvim_tree.setup {
         cursorline = true,
         debounce_delay = 15,
         width = 30,
-        hide_root_folder = false,
         side = "left",
         preserve_window_proportions = false,
         number = false,
@@ -233,6 +235,7 @@ nvim_tree.setup {
           git = false,
           profile = false,
           watcher = false,    },
-  },
+        },
+      })
+  end,
 }
-require("nvim-tree.api").tree.open()
