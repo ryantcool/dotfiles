@@ -10,9 +10,6 @@ alias kssh='kitty +kitten ssh'
 
 
 # Bluetooth
-alias indyevo_connect='bluetoothctl connect 38:F3:2E:DA:B8:EF'
-alias indyevo_disconnect='bluetoothctl disconnect'
-
 
 # VPN
 alias config-vpn='/home/$USER/.local/bin/config-vpn'
