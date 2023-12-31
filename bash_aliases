@@ -20,4 +20,3 @@ alias config-vpn='/home/$USER/.local/bin/config-vpn'
 # Work
 alias share_connect='sudo mount //cfs.yale.edu/home/Translational_Brain_Imaging_Program-CC1092-MPSY_Imaging /mnt/work_file_share/ -t cifs -o credentials=/home/$USER/.creds/wfs,uid=$(id -u),gid=$(id -g),forceuid,forcegid'
 alias share_disconnect='sudo umount /mnt/work_file_share'
-
