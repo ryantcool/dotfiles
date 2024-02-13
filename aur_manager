@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+: '
+Author: Ryan Cool
+Date: 2024-02-13
+
+Simple script to check AUR repos for updates. This assumes that
+each directory set in aur_dir is a repo, so if aur_dir is empty
+or doesnt have any directories in it, it will not run.
+'
+
+# Set AUR DIR
+aur_dir="/home/$USER/.local/aur"
+
+# DONT CHANGE BELOW
+############################################
+gather_repos() {
+    printf "\nGathering AUR repos in %s\n" "$aur_dir"
+    cd "$aur_dir" || exit 1
+    readarray -t repos < <(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n')
+}
+
+update_repo() {
+    repo_to_check="$1"
+    cd "$repo_to_check" || exit 1
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    if git remote show origin | grep -q "local out of date"; then
+        git remote update origin
+        git pull origin "$branch"
+        makepkg -sirc
+        git clean -dfx
+    else
+        printf "\n%s is up to date, checking next repo\n" "$1"
+    fi
+    cd "$aur_dir" || exit 1
+}
+
+main() {
+    gather_repos
+    if [[ ${#repos[@]} -ge 1 ]]; then
+        for repo in "${repos[@]}"; do
+            update_repo "$repo"
+        done
+    else
+        printf "\nNo repos found in %s\n" "$aur_dir"
+    fi
+}
+
+main
