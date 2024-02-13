@@ -32,7 +32,7 @@ HISTCONTROL=ignoredups
 # Personal Functions
 
 mpv-stream() {
-    yt-dlp -o - $1 | mpv -
+    yt-dlp -f bestvideo+bestaudio -o - $1 | mpv -
 }
 
 # Cargo
