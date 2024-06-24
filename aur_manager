@@ -7,6 +7,10 @@ Date: 2024-02-13
 Simple script to check AUR repos for updates. This assumes that
 each directory set in aur_dir is a repo, so if aur_dir is empty
 or doesnt have any directories in it, it will not run.
+
+Updated: 2024-06-24
+
+
 '
 
 # Set AUR DIR
@@ -20,15 +24,38 @@ gather_repos() {
     readarray -t repos < <(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n')
 }
 
+check_installed() {
+    package="$1"
+    if pacman -Qs "$package" > /dev/null; then
+        return 0
+    else
+        printf "\n%s is not installed\n" "$package"
+        read -p "Would you like to install it? (y/n) " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            printf "\n%s will be installed" "$package"
+            touch "$package/.lvg_do_install"
+        else
+            printf "\nSkipping installation for %s" "$package"
+            touch "$package/.lvg_dont_install"
+        fi
+    fi
+}
+
 update_repo() {
     repo_to_check="$1"
     cd "$repo_to_check" || exit 1
     branch=$(git rev-parse --abbrev-ref HEAD)
     if git remote show origin | grep -q "local out of date"; then
         git remote update origin
-        git pull origin "$branch"
-        makepkg -sirc
-        git clean -dfx
+        if [[ -e ".lvg_do_install" ]]; then
+            git pull origin "$branch"
+            makepkg -sirc
+            git clean -dfx
+        elif [[ -e ".lvg_dont_install" ]]; then
+            return 0
+        else
+            printf "\n Error"
+        fi
     else
         printf "\n%s is up to date, checking next repo\n" "$1"
     fi
@@ -39,6 +66,7 @@ main() {
     gather_repos
     if [[ ${#repos[@]} -ge 1 ]]; then
         for repo in "${repos[@]}"; do
+            check_installed "$repo"
             update_repo "$repo"
         done
     else
