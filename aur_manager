@@ -8,7 +8,10 @@ Simple script to check AUR repos for updates. This assumes that
 each directory set in aur_dir is a repo, so if aur_dir is empty
 or doesnt have any directories in it, it will not run.
 
-Updated: 2024-06-24
+ * Updated: 2024-07-30
+    - added config_file to use for handling repos and whether or not to install them
+    - added new functions to read/parse and add to json config file
+
 
 
 '
@@ -16,16 +19,68 @@ Updated: 2024-06-24
 # Set AUR DIR
 aur_dir="/home/$USER/.local/aur"
 
-# DONT CHANGE BELOW
-############################################
+
+#########################################
+#       DONT CHANGE BELOW               #
+#########################################
+
+CONFIG_FILE="$aur_dir/aur-config.json"
+
+# Check if jq is installed
+if ! command -v jq &> /dev/null; then
+    printf "jq is required but not installed. Please install it and try again.\n"
+    exit 1  # indicates code failure
+fi
+
+check_config_file() {
+    if [[ ! -f "$CONFIG_FILE" ]]; then
+        printf "\nConfiguration file '%s' does not exist.\n" "$CONFIG_FILE"
+        read -p "Would you like to create it? (y/n) " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            # Use printf to initiate creation of default config file
+            printf '{
+  "repos": []
+}' > "$CONFIG_FILE"
+            # Loop through repos in aur_dir
+            for repo in "$aur_dir"/*/; do
+                repo_name=$(basename "$repo")
+                # Add each repo to specified config file using jq
+                jq --arg name "$repo_name" '.repos += [{"name": $name, "install": ""}]' "$CONFIG_FILE" > tmp.$$.json && mv tmp.$$.json "$CONFIG_FILE"
+            done
+            printf "\nConfiguration file '%s' has been created.\n" "$CONFIG_FILE"
+        else
+            printf "\nExiting the script. Please create the configuration file manually.\n"
+            printf "\n The file should have this structure:\n"
+            printf '\n{
+    "repos": [
+        {
+            "name": "example-repo",
+            "install": "yes"
+        }
+    ]
+}\n'
+            exit 1  # Exit if the user does not want to create the file
+        fi
+    fi
+}
+
+check_config_file
+
+###############################
+#   Functions used in Main    #
+###############################
+
+# Reads all git aur repos in $aur_dir to an array
 gather_repos() {
     printf "\nGathering AUR repos in %s\n" "$aur_dir"
     cd "$aur_dir" || exit 1
     readarray -t repos < <(find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n')
 }
 
-check_installed() {
+# Checks to see if package is currently installed
+check_sys_installed() {
     package="$1"
+    cs_install_status=$(jq -r --arg repo "$package" '.repos[] | select(.name == $repo) | .install' "$CONFIG_FILE")
     if pacman -Qs "$package" > /dev/null; then
         return 0
     else
@@ -33,28 +88,66 @@ check_installed() {
         read -p "Would you like to install it? (y/n) " -n 1 -r
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             printf "\n%s will be installed" "$package"
-            touch "$package/.lvg_do_install"
+            update_repo_install_status "$package" "yes"
         else
-            printf "\nSkipping installation for %s" "$package"
-            touch "$package/.lvg_dont_install"
+            printf "\nSkipping installation for %s\n" "$package"
+            if [[ "$cs_install_status" == "no" ]]; then
+            printf "\nInstallation status for %s is already 'no'. Continuing...\n" "$package"
+            else
+                update_repo_install_status "$package" "no"
+            fi
         fi
     fi
 }
 
+# Update installation status of aur repo in config.json
+update_repo_install_status() {
+    local repo_name="$1"
+    local new_status="$2"
+
+    # Attempt to update the install status in the config file using jq
+    if jq --arg repo "$repo_name" --arg status "$new_status" '(.repos[] | select(.name == $repo).install) = $status' "$CONFIG_FILE" > tmp.$$.json; then
+        # mv tmp file to the orig config file
+        mv tmp.$$.json "$CONFIG_FILE"
+        printf "\nUpdated %s status to '%s' in the config file.\n" "$repo_name" "$new_status"
+    else
+        # If jq fails, handle the error
+        printf "\nFailed to update %s status in the config file.\n" "$repo_name"
+        rm tmp.$$.json  # Clean up the temporary file if it exists
+        return 1  # indicates code failure
+    fi
+}
+
+# Checks and returns install status of repo
+check_repo_install_status() {
+    local repo_name="$1"
+
+    # Uses jq to parse JSON and find the install status of current repo being passed
+    cr_install_status=$(jq -r --arg repo "$repo_name" '.repos[] | select(.name == $repo) | .install' "$CONFIG_FILE")
+
+    # Checks if install status is empty
+    if [[ -z "$cr_install_status" ]]; then
+        printf "%s status not found in the config file." "$repo_name"
+    else
+        printf "%s" "$cr_install_status"
+    fi
+}
+
+# Checks, pulls, updates, and installs repo updates from git
 update_repo() {
     repo_to_check="$1"
     cd "$repo_to_check" || exit 1
     branch=$(git rev-parse --abbrev-ref HEAD)
     if git remote show origin | grep -q "local out of date"; then
         git remote update origin
-        if [[ -e ".lvg_do_install" ]]; then
+        if [[ $(check_repo_install_status "$repo_to_check") == "yes" ]]; then
             git pull origin "$branch"
             makepkg -sirc
             git clean -dfx
-        elif [[ -e ".lvg_dont_install" ]]; then
+        elif [[ $(check_repo_install_status "$repo_to_check") == "no" ]]; then
             return 0
         else
-            printf "\n Error"
+            printf "\nError occurred\n"
         fi
     else
         printf "\n%s is up to date, checking next repo\n" "$1"
@@ -66,7 +159,7 @@ main() {
     gather_repos
     if [[ ${#repos[@]} -ge 1 ]]; then
         for repo in "${repos[@]}"; do
-            check_installed "$repo"
+            check_sys_installed "$repo"
             update_repo "$repo"
         done
     else
