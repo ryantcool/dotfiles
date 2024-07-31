@@ -138,15 +138,29 @@ update_repo() {
     repo_to_check="$1"
     cd "$repo_to_check" || exit 1
     branch=$(git rev-parse --abbrev-ref HEAD)
+    # Checks if local repo is out of date with remote repo
     if git remote show origin | grep -q "local out of date"; then
         git remote update origin
-        if [[ $(check_repo_install_status "$repo_to_check") == "yes" ]]; then
+        # Prompts user to set install status if it's currently empty
+        if [[ -z $(check_repo_install_status "$repo_to_check") ]]; then
+            printf "\nInstall status for %s is empty\n" "$repo_to_check"
+            read -p "Would you like to install it? (y/n) " -n 1 -r
+            if [[ $REPLY =~ ^[Yy]$ ]]; then
+                update_repo_install_status "$repo_to_check" "yes"
+            else
+                update_repo_install_status "$repo_to_check" "no"
+            fi
+        # If install status is yes, this pulls from git origin main branch
+        # and tries to run makepkg for installation
+        elif [[ $(check_repo_install_status "$repo_to_check") == "yes" ]]; then
             git pull origin "$branch"
             makepkg -sirc
             git clean -dfx
+        # If install status is no, this will continue to the next repo
         elif [[ $(check_repo_install_status "$repo_to_check") == "no" ]]; then
             return 0
         else
+            # Extremely generic and vague error message....Need to add better error handling in the future
             printf "\nError occurred\n"
         fi
     else
