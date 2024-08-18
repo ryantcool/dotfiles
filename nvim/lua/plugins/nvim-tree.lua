@@ -219,9 +219,9 @@ return {
         },
       },
       experimental = {
-        git = {
-          async = true,
-        },
+        --git = {
+          --async = true,
+        --},
       },
       log = {
         enable = false,
