@@ -1,0 +1,53 @@
+#
+# ~/.bashrc
+#
+
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+alias ls='ls --color=auto'
+
+# PS1 Customizations
+TL="╭─"
+BL="╰─"
+BLUE="$(tput setaf 83)"
+WBOLD="$(tput setaf 7 bold)"
+BACKGROUND="$(tput setab 105)"
+RESET="$(tput sgr0)"
+PS1='${TL}[\[${BACKGROUND}${BLUE}\]\u\[${RESET}\]@\h]\n${BL}\[${WBOLD}\]( \W )\[${RESET}\] \$ '
+
+# Personal Changes
+if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+	. /usr/share/bash-completion/bash_completion
+fi
+
+#source ~/.local/share/bash_completions.d/config-vpn.bash
+
+# Add Local binaries to path
+export PATH"=~/.local/bin:$PATH"
+export PATH="$PATH:/opt/nvim-linux64/bin"
+
+
+# Source bash aliases
+if [[ -f ~/.bash_aliases ]]; then
+    . ~/.bash_aliases
+fi
+
+
+HISTSIZE=100
+HISTFILESIZE=100
+HISTTIMEFORMAT="%F %T "
+HISTCONTROL=ignoredups
+
+# Display for WSL2 with VcXsrv
+#export DISPLAY=$(grep -m 1 nameserver /etc/resolv.conf | awk '{print $2}'):0.0
+#export LIBGL_ALWAYS_INDIRECT=1
+
+
+# Cargo
+. "$HOME/.cargo/env"
+
+# NVM
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

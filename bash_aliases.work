@@ -1,0 +1,22 @@
+# List Aliases below as follows:
+# alias alias_name='command/to/run'
+
+alias ls='lsd'
+
+# Applications
+
+# Share Drive
+alias share_connect='sudo mount //cfs.yale.edu/home/Translational_Brain_Imaging_Program-CC1092-MPSY_Imaging /mnt/work_file_share/ -t cifs -o credentials=/home/$USER/.creds/wfs,uid=$(id -u),gid=$(id -g),forceuid,forcegid'
+alias share_disconnect='sudo umount /mnt/work_file_share'
+
+alias wsl_share_connect='sudo mount -t drvfs Z: /mnt/z'
+alias wsl_share_disconnect='sudo umount /mnt/z'
+
+# FSL Config
+#FSLDIR=/usr/local/fsl
+#. ${FSLDIR}/etc/fslconf/fsl.sh
+#PATH=${FSLDIR}/bin:${PATH}
+#export FSLDIR PATH
+
+# My custom values for FSL environment variables
+#export FSLOUTPUTTYPE=ANALYZE
