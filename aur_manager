@@ -7,13 +7,6 @@ Date: 2024-02-13
 Simple script to check AUR repos for updates. This assumes that
 each directory set in aur_dir is a repo, so if aur_dir is empty
 or doesnt have any directories in it, it will not run.
-
- * Updated: 2024-07-30
-    - added config_file to use for handling repos and whether or not to install them
-    - added new functions to read/parse and add to json config file
-
-
-
 '
 
 # Set AUR DIR
@@ -140,29 +133,45 @@ update_repo() {
     branch=$(git rev-parse --abbrev-ref HEAD)
     # Checks if local repo is out of date with remote repo
     if git remote show origin | grep -q "local out of date"; then
-        git remote update origin
-        # Prompts user to set install status if it's currently empty
-        if [[ -z $(check_repo_install_status "$repo_to_check") ]]; then
-            printf "\nInstall status for %s is empty\n" "$repo_to_check"
-            read -p "Would you like to install it? (y/n) " -n 1 -r
-            if [[ $REPLY =~ ^[Yy]$ ]]; then
-                update_repo_install_status "$repo_to_check" "yes"
-            else
-                update_repo_install_status "$repo_to_check" "no"
-            fi
-        # If install status is yes, this pulls from git origin main branch
-        # and tries to run makepkg for installation
-        elif [[ $(check_repo_install_status "$repo_to_check") == "yes" ]]; then
-            git pull origin "$branch"
-            makepkg -sirc
-            git clean -dfx
-        # If install status is no, this will continue to the next repo
-        elif [[ $(check_repo_install_status "$repo_to_check") == "no" ]]; then
-            return 0
-        else
-            # Extremely generic and vague error message....Need to add better error handling in the future
-            printf "\nError occurred\n"
-        fi
+        git fetch origin
+        while true; do
+            git diff origin/"${branch}" "${branch}" 
+            read -p "Continue (c) or Skip (s) to next repo?" -r choice
+            case "${choice}" in
+                [Cc]* )
+                    git remote update origin
+                    # Prompts user to set install status if it's currently empty
+                    if [[ -z $(check_repo_install_status "$repo_to_check") ]]; then
+                        printf "\nInstall status for %s is empty\n" "$repo_to_check"
+                        read -p "Would you like to install it? (y/n) " -n 1 -r
+                        if [[ $REPLY =~ ^[Yy]$ ]]; then
+                            update_repo_install_status "$repo_to_check" "yes"
+                        else
+                            update_repo_install_status "$repo_to_check" "no"
+                        fi
+                    # If install status is yes, this pulls from git origin main branch
+                    # and tries to run makepkg for installation
+                    elif [[ $(check_repo_install_status "$repo_to_check") == "yes" ]]; then
+                        git pull origin "$branch"
+                        makepkg -sirc
+                        git clean -dfx
+                    # If install status is no, this will continue to the next repo
+                    elif [[ $(check_repo_install_status "$repo_to_check") == "no" ]]; then
+                        return 0
+                    else
+                    # Extremely generic and vague error message....Need to add better error handling in the future
+                        printf "\nError occurred\n"
+                    fi
+                    break
+                    ;;
+                [Ss]* )
+                    return 0
+                    ;;
+                * )
+                    echo "Please answer 'c' to continue or 's' to skip"
+                    ;;
+                esac
+            done
     else
         printf "\n%s is up to date, checking next repo\n" "$1"
     fi
