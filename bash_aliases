@@ -2,7 +2,7 @@
 # alias alias_name='command/to/run'
 
 alias ls='lsd'
-alias docker='podman'
+#alias docker='podman'
 
 # Kitty
 alias kitty-update='curl -L https://sw.kovidgoyal.net/kitty/installer.sh | sh /dev/stdin'
