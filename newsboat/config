@@ -1,6 +1,6 @@
 include /usr/share/doc/newsboat/contrib/colorschemes/nord
 
-browser "xdg-open %u"
+browser "w3m %u"
 player mpv
 
 # -- feeds ---------------------------------------------------------------------
