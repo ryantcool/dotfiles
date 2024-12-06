@@ -14,6 +14,8 @@ opt.completeopt = 'menuone,noinsert,noselect'  -- Autocomplete options
 -----------------------------------------------------------
 -- Neovim UI
 -----------------------------------------------------------
+opt.wrap = false            -- No wrap lines
+opt.linebreak = false        -- Wrap on word boundary
 opt.number = true           -- Show line number
 opt.showmatch = true        -- Highlight matching parenthesis
 opt.foldmethod = 'marker'   -- Enable folding (default 'foldmarker')
@@ -22,10 +24,8 @@ opt.splitright = true       -- Vertical split to the right
 opt.splitbelow = true       -- Horizontal split to the bottom
 opt.ignorecase = true       -- Ignore case letters when search
 opt.smartcase = true        -- Ignore lowercase for the whole pattern
-opt.linebreak = true        -- Wrap on word boundary
 opt.termguicolors = true    -- Enable 24-bit RGB colors
 opt.laststatus=3            -- Set global statusline
-cmd[[colorscheme catppuccin]]
 -----------------------------------------------------------
 -- Tabs, indent
 -----------------------------------------------------------

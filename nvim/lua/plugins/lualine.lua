@@ -1,11 +1,10 @@
-return {
-  'nvim-lualine/lualine.nvim',
-  dependencies = { 'nvim-tree/nvim-web-devicons'},
-	config = function()
-    require('lualine').setup({
-			options = {
-				theme = 'catppuccin',
-			}
-		})
-	end,
-}
+local status_ok, nvim_lualine = pcall(require, 'lualine')
+if not status_ok then
+  return
+end
+
+nvim_lualine.setup({
+  options = {
+    theme = 'catppuccin',
+  }
+})
