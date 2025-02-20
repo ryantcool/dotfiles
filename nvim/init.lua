@@ -9,4 +9,3 @@ require("plugins.nvim-cmp")
 require("plugins.nvim-lsp")
 require("plugins.nvim-tree")
 require("plugins.treesitter")
-
