@@ -38,18 +38,24 @@ HISTCONTROL=ignoredups
 # Personal Functions
 
 mpv-stream() {
-    yt-dlp -f bv+ba/b -o - "$1" | mpv -
+    yt-dlp -o - "$1" | mpv -
 }
+
 
 # Cargo
 . "$HOME/.cargo/env"
 
 # Node
+export npm_config_prefix="$HOME/.npm-global"
 export PATH="$HOME/.npm-global/bin:$PATH"
 
 ##############
 #Work Related#
 ##############
+
+image2mp4() {
+    ffmpeg -framerate 15 -pattern_type glob -i "*.${1}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease" -c:v libx264 -r 15 -pix_fmt yuv420p slideshow.mp4
+}
 
 # FSL Setup
 #FSLDIR=~/fsl
