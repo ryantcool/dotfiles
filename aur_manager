@@ -151,6 +151,9 @@ update_repo() {
                         read -p "Would you like to install it? (y/n) " -n 1 -r
                         if [[ $REPLY =~ ^[Yy]$ ]]; then
                             update_repo_install_status "$repo_to_check" "yes"
+                            git pull origin "$branch"
+                            makepkg -sirc
+                            git clean -dfx
                         else
                             update_repo_install_status "$repo_to_check" "no"
                         fi
