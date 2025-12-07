@@ -8,7 +8,7 @@
 -- For configuration see the Wiki: https://github.com/neovim/nvim-lspconfig/wiki
 -- Autocompletion settings of "nvim-cmp" are defined in plugins/nvim-cmp.lua
 
-local lsp_status_ok, lspconfig = pcall(require, 'lspconfig')
+local lsp_status_ok, lspconfig = pcall(require, 'vim.lsp.config')
 if not lsp_status_ok then
   return
 end
