@@ -5,6 +5,6 @@ end
 
 nvim_lualine.setup({
   options = {
-    theme = 'catppuccin',
+    theme = 'catppuccin-nvim',
   }
 })
