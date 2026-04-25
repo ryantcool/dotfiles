@@ -2,3 +2,4 @@
 # alias alias_name='command/to/run'
 
 alias ls='lsd'
+alias ping='gping'
