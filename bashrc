@@ -2,11 +2,17 @@
 # ~/.bashrc
 #
 
+######################
+# SHELLCHECK OPTIONS #
+######################
+
+# shellcheck disable=SC1090,SC1091
+
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 ####################
-# Personal Changes #
+# Personal Changes #s
 ####################
 
 # PS1 Customization
@@ -20,14 +26,14 @@ PS1='${TL}[\[${BACKGROUND}${BLUE}\]\u\[${RESET}\]@\h]\n${BL}\[${WBOLD}\]( \W )\[
 
 # Source usr and .local bash completions
 if [[ -f /usr/share/bash-completion/bash_completion ]]; then
-	. /usr/share/bash-completion/bash_completion
+    . /usr/share/bash-completion/bash_completion
 fi
 
-source "${HOME}"/.local/share/bash_completions.d/config-vpn.bash
+. "${HOME}"/.local/share/bash_completions.d/config-vpn.bash
 
 # Source bash aliases
 if [[ -f ~/.bash_aliases ]]; then
-	. "${HOME}"/.bash_aliases
+    . "${HOME}"/.bash_aliases
 fi
 
 # Add Local binaries to path
@@ -42,62 +48,89 @@ HISTFILESIZE=100
 HISTTIMEFORMAT="%F %T "
 HISTCONTROL=ignoredups
 
-# Personal Functions
+######################
+# Personal Functions #
+######################
 
 mpv-stream() {
-	yt-dlp -o - "$1" | mpv -
+    yt-dlp -o - "$1" | mpv -
 }
 
 # Papirus functions
 folder-update() {
-	wget -qO- https://git.io/papirus-folders-install | env PREFIX="${HOME}"/.local sh
+    wget -qO- https://git.io/papirus-folders-install | env PREFIX="${HOME}"/.local sh
 }
 
 icon-update() {
-	wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="${HOME}"/.local/share/icons sh
+    wget -qO- https://git.io/papirus-icon-theme-install | env DESTDIR="${HOME}"/.local/share/icons sh
 }
 
+# Render CV
+rendercv() {
+    docker run --rm -v "${PWD}":/work -u "$(id -u)":"$(id -g)" -e HOME=/tmp -w /work ghcr.io/rendercv/rendercv "$@"
+}
+
+##################
+# Coding Related #
+##################
+
 # Cargo
-. "$HOME/.cargo/env"
+. "${HOME}/.cargo/env"
 
 # Node
-export npm_config_prefix="$HOME/.npm-global"
-export PATH="$HOME/.npm-global/bin:$PATH"
+export npm_config_prefix="${HOME}/.npm-global"
+export PATH="${HOME}/.npm-global/bin:${PATH}"
+
+# Conda Setup
+
+# >>> conda initialize >>>
+# !! Contents within this block are managed by 'conda init' !!
+__conda_setup="$("${HOME}/miniconda3/bin/conda" 'shell.bash' 'hook' 2>/dev/null)"
+if [ $? -eq 0 ]; then
+    eval "${__conda_setup}"
+else
+    if [ -f "${HOME}/miniconda3/etc/profile.d/conda.sh" ]; then
+        . "${HOME}/miniconda3/etc/profile.d/conda.sh"
+    else
+        export PATH="${HOME}/miniconda3/bin:${PATH}"
+    fi
+fi
+unset __conda_setup
+# <<< conda initialize <<<
+
+############################
+# SSH Agent for VSCode/Zed #
+############################
+
+SSH_ENV="${HOME}/.ssh/ssh-agent"
+
+# Load existing agent env if present
+if [ -f "${SSH_ENV}" ]; then
+    . "${SSH_ENV}" >/dev/null
+fi
+
+# Test if agent is actually usable
+ssh-add -l >/dev/null 2>&1
+if [ $? -eq 2 ]; then
+    ssh-agent -s >"${SSH_ENV}"
+    . "${SSH_ENV}" >/dev/null
+    ssh-add >/dev/null 2>&1
+fi
 
 ########################
 # Work-Related Changes #
 ########################
 
 share_connect() {
-	creds_file="/home/${USER}/.creds/wfs"
-	sudo mount //cfs.yale.edu/home/Translational_Brain_Imaging_Program-CC1092-MPSY_Imaging \
-		/mnt/work_file_share/ \
-		-t cifs -o credentials="${creds_file}",uid="$(id -u)",gid="$(id -g)",forceuid,forcegid
+    sudo mount //cfs.yale.edu/home/Translational_Brain_Imaging_Program-CC1092-MPSY_Imaging \
+        /mnt/work_file_share/ \
+        -t cifs -o username=rtc29,uid="$(id -u)",gid="$(id -g)",forceuid,forcegid
 }
 
 share_disconnect() {
-	sudo umount /mnt/work_file_share
+    sudo umount /mnt/work_file_share
 }
 
 image2mp4() {
-	ffmpeg -framerate 15 -pattern_type glob -i "*.${1}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease" -c:v libx264 -r 15 -pix_fmt yuv420p slideshow.mp4
+    ffmpeg -framerate 15 -pattern_type glob -i "*.${1}" -vf "scale=1920:1080:force_original_aspect_ratio=decrease" -c:v libx264 -r 15 -pix_fmt yuv420p slideshow.mp4
 }
-
-###############
-# Conda Setup #
-###############
-
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/ryantcool/miniconda3/bin/conda' 'shell.bash' 'hook' 2>/dev/null)"
-if [ $? -eq 0 ]; then
-	eval "$__conda_setup"
-else
-	if [ -f "/home/ryantcool/miniconda3/etc/profile.d/conda.sh" ]; then
-		. "/home/ryantcool/miniconda3/etc/profile.d/conda.sh"
-	else
-		export PATH="/home/ryantcool/miniconda3/bin:$PATH"
-	fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
