@@ -2,7 +2,7 @@
 
 : '
 Author: Ryan Cool
-Date: 2024-02-13
+Date: 2026-04-26
 
 Simple script to check AUR repos for updates. This assumes that
 each directory set in AUR_DIR is a repo, so if AUR_DIR is empty
@@ -37,7 +37,7 @@ check_config_file() {
             for repo in "${AUR_DIR}"/*/; do
                 repo_name=$(basename "${repo}")
                 # Add each repo to specified config file using jq
-                jq --arg name "${repo_name}" '.repos += [{"name": $name, "install": ""}]' "${CONFIG_FILE}" >tmp.$$.json && mv tmp.$$.json "${CONFIG_FILE}"
+                jq --arg name "${repo_name}" '.repos += [{"name": $name, "install": "yes"}]' "${CONFIG_FILE}" >tmp.$$.json && mv tmp.$$.json "${CONFIG_FILE}"
             done
             printf "\nConfiguration file '%s' has been created.\n" "${CONFIG_FILE}"
         else
@@ -81,6 +81,13 @@ check_sys_installed() {
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             printf "\n%s will be installed" "${package}"
             update_repo_install_status "${package}" "yes"
+            printf "\nChanging into %s directory" "${package}"
+            cd "${package}" || exit 1
+            printf "\nAttempting to run makepkg -sirc for %s\n" "${package}"
+            makepkg -sirc
+            printf "\nRunning git clean -dfx for %s directory\n" "${package}"
+            git clean -dfx
+            cd "${AUR_DIR}" || exit 1
         else
             printf "\nSkipping installation for %s\n" "${package}"
             if [[ "${cs_install_status}" == "no" ]]; then
