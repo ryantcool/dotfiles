@@ -16,7 +16,8 @@
 ####################
 
 # PS1 Customization
-TL="╭─"
+#TL="╭─"
+TL="─" # This looks better with conda (base) in PS1
 BL="╰─"
 BLUE="$(tput setaf 20)"
 WBOLD="$(tput setaf 7 bold)"
@@ -70,6 +71,15 @@ rendercv() {
     docker run --rm -v "${PWD}":/work -u "$(id -u)":"$(id -g)" -e HOME=/tmp -w /work ghcr.io/rendercv/rendercv "$@"
 }
 
+# Pacman Mirrors
+update_mirrors() {
+    _sudo=/usr/bin/sudo
+    num_mirrors="$1"
+
+    rankmirrors -n "${num_mirrors}" /etc/pacman.d/mirrorlist.backup \
+        | "${_sudo}" tee /etc/pacman.d/mirrorlist > /dev/null
+}
+
 ##################
 # Coding Related #
 ##################
@@ -80,6 +90,10 @@ rendercv() {
 # Node
 export npm_config_prefix="${HOME}/.npm-global"
 export PATH="${HOME}/.npm-global/bin:${PATH}"
+
+# PNPM
+export PATH="${HOME}/.pnpm-global/bin:${PATH}"
+
 
 # Conda Setup
 
