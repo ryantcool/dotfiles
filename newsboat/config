@@ -5,7 +5,7 @@ player mpv
 
 # -- feeds ---------------------------------------------------------------------
 
-auto-reload yes
+auto-reload no
 reload-time 60
 reload-threads 3
 download-retries 2
