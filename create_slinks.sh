@@ -12,7 +12,7 @@ df_dir=$(dirname -- "$(readlink -f -- "${0}")")
 df_backup="/home/${USER}/dotfiles_backup"
 
 # Reads files in df_dir to an array, including the ones that match the grep arguments
-readarray -t dot_files < <(find "${df_dir}" -mindepth 1 -maxdepth 1 -printf '%P\n' | grep -E "tmux|newsboat|^bash")
+readarray -t dot_files < <(find "${df_dir}" -mindepth 1 -maxdepth 1 -printf '%P\n' | grep -E "tmux|newsboat|^bash|^profile")
 readarray -t config_files < <(find "${df_dir}" -mindepth 1 -maxdepth 1 -printf '%P\n' | grep -E "nvim|alacritty|kitty")
 
 # Creates backup folder for existing files, if folder doesn't exist already
