@@ -146,11 +146,10 @@ update_repo() {
     if git remote show origin | grep -q "local out of date"; then
         git fetch origin
         while true; do
-            git diff origin/"${branch}" "${branch}"
+            git diff "${branch}" origin/"${branch}"
             read -p "Continue (c) or Skip (s) to next repo?" -r choice
             case "${choice}" in
             [Cc]*)
-                git remote update origin
                 # Prompts user to set install status if it's currently empty
                 if [[ -z $(check_repo_install_status "${repo_to_check}") ]]; then
                     printf "\nInstall status for %s is empty\n" "${repo_to_check}"
